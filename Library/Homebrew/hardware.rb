@@ -32,6 +32,9 @@ class Hardware
   when /linux/
     require 'os/linux/hardware'
     CPU.extend LinuxCPUs
+  when /mingw/
+    require 'os/windows/hardware'
+    CPU.extend WindowsCPUs
   else
     raise "The system `#{`uname`.chomp}' is not supported."
   end
