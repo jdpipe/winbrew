@@ -17,7 +17,11 @@ class Tty
     def gray; bold 30 end
 
     def width
-      `/usr/bin/tput cols`.strip.to_i
+      if MACOS
+        `/usr/bin/tput cols`.strip.to_i
+      else
+        `stty size`.split(' ')[1].to_i
+      end
     end
 
     def truncate(str)
