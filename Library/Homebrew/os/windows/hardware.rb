@@ -32,6 +32,6 @@ module WindowsCPUs
   private
 
   def wmic(property)
-    `wmic cpu get #{property}`.split("\n")[2]
+    `wmic cpu get #{property}`.split("\n")[2].strip
   end
 end
