@@ -108,7 +108,7 @@ module Homebrew
       # But if you know how to write it better, let me know - A.
       msg = "#{e}"
       if msg.include? "Exec format error"
-        Process.spawn 'sh', cmd, *args
+        Process.spawn 'sh', '-c', cmd, *args
       else
         raise e
       end
@@ -210,7 +210,7 @@ end
 def safe_exec cmd, *args
   # This buys us proper argument quoting and evaluation
   # of environment variables in the cmd parameter.
-  exec "/bin/sh", "-i", "-c", cmd + ' "$@"', "--", *args
+  exec "sh", "-i", "-c", cmd + ' "$@"', "--", *args
 end
 
 # GZips the given paths, and returns the gzipped paths
