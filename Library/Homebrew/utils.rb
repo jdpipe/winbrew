@@ -88,7 +88,7 @@ def interactive_shell f=nil
     ENV['HOMEBREW_DEBUG_INSTALL'] = f.name
   end
 
-  fork {exec ENV['SHELL'] }
+  Process.spawn 'sh --login -i'
   Process.wait
   unless $?.success?
     puts "Aborting due to non-zero exit status"
@@ -100,7 +100,20 @@ module Homebrew
   def self.system cmd, *args
     puts "#{cmd} #{args*' '}" if ARGV.verbose?
     args.collect!{|arg| arg.to_s}
-    Process.spawn cmd, *args
+
+    begin
+      Process.spawn cmd, *args
+    rescue => e
+      # Shut up, that's real clean code.
+      # But if you know how to write it better, let me know - A.
+      msg = "#{e}"
+      if msg.include? "Exec format error"
+        Process.spawn 'sh', cmd, *args
+      else
+        raise e
+      end
+    end
+
     Process.wait
     $?.success?
   end
