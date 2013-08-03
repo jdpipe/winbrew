@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'windows'
 
 # We enhance FileUtils to make our Formula code more readable.
 module FileUtils extend self
@@ -14,7 +15,8 @@ module FileUtils extend self
     # /tmp volume to the other volume. So we let the user override the tmp
     # prefix if they need to.
     tmp = ENV['HOMEBREW_TEMP'].chuzzle || '/tmp'
-    tempd = with_system_path { `mktemp -d #{tmp}/#{name}-XXXX` }.chuzzle
+    tempd = Windows.canonicalize(`mktemp -d #{tmp}/#{name}-XXXX`.chuzzle)
+    
     raise "Failed to create sandbox" if tempd.nil?
     prevd = pwd
     cd tempd
