@@ -322,17 +322,17 @@ class FormulaInstaller
     # Ruby 2.0+ sets close-on-exec on all file descriptors except for
     # 0, 1, and 2 by default, so we have to specify that we want the pipe
     # to remain open in the child process.
-    args << { write => write } if RUBY_VERSION >= "2.0"
+    # args << { write => write } if RUBY_VERSION >= "2.0"
 
-    fork do
-      begin
-        read.close
-        exec(*args)
-      rescue Exception => e
-        Marshal.dump(e, write)
-        write.close
-        exit! 1
-      end
+    begin
+      puts "Spawning... #{args}"
+      Process.spawn *args,
+                    :in => read,
+                    :out => write
+    rescue Exception => e
+      puts e
+      write.close
+      exit! 1
     end
 
     ignore_interrupts(:quietly) do # the fork will receive the interrupt and marshall it back
