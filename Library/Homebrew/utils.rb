@@ -137,16 +137,13 @@ def quiet_system cmd, *args
 end
 
 def curl *args
-  curl = Pathname.new '/usr/bin/curl'
-  raise "#{curl} is not executable" unless curl.exist? and curl.executable?
-
   args = [HOMEBREW_CURL_ARGS, HOMEBREW_USER_AGENT, *args]
   # See https://github.com/mxcl/homebrew/issues/6103
   args << "--insecure" if MacOS.version < 10.6
   args << "--verbose" if ENV['HOMEBREW_CURL_VERBOSE']
   args << "--silent" unless $stdout.tty?
 
-  safe_system curl, *args
+  safe_system 'curl', *args
 end
 
 def puts_columns items, star_items=[]
