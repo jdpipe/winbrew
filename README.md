@@ -19,13 +19,13 @@ Installation
 
 * If necessary, add to your `.profile`:
 
-```sh
-#!/bin/sh.exe
-if [ -f ${HOME}/.bashrc ]
-then
-  . ${HOME}/.bashrc
-fi
-```
+ ```sh
+ #!/bin/sh.exe
+ if [ -f ${HOME}/.bashrc ]
+ then
+   . ${HOME}/.bashrc
+ fi
+ ```
 
 * `brew install $WHATEVER_YOU_WANT`
 
