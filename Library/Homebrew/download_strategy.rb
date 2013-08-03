@@ -115,11 +115,11 @@ class CurlDownloadStrategy < AbstractDownloadStrategy
     when :gzip, :bzip2, :compress, :tar
       # Assume these are also tarred
       # TODO check if it's really a tar archive
-      with_system_path { safe_system 'tar', 'xf', @tarball_path }
+      safe_system 'tar', 'xf', @tarball_path
       chdir
     when :xz
       raise "You must install XZutils: brew install xz" unless File.executable? xzpath
-      with_system_path { safe_system "#{xzpath} -dc \"#{@tarball_path}\" | tar xf -" }
+      safe_system "#{xzpath} -dc \"#{@tarball_path}\" | tar xf -"
       chdir
     when :pkg
       safe_system '/usr/sbin/pkgutil', '--expand', @tarball_path, basename_without_params
