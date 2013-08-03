@@ -18,11 +18,17 @@ module MacOS extend self
     # Give the name of the binary you look for as a string to this method
     # in order to get the full path back as a Pathname.
     (@locate ||= {}).fetch(tool.to_s) do
-      @locate[tool.to_s] = if File.executable?(path = "/usr/bin/#{tool}.exe")
-        Pathname.new path
-      elsif File.executable?(path = "/mingw/bin/#{tool}.exe")
-        Pathname.new path
+      ENV['PATH'].split(';').each do |prefix|
+        ['', '.exe'].each do |postfix|
+          path = (Pathname.new(prefix) + (tool.to_s + postfix))
+          if path.exist? and path.executable?
+            return @locate[tool.to_s] = path
+          end
+        end
       end
+
+      # not found :/
+      nil
     end
   end
 
