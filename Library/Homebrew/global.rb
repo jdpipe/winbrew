@@ -79,7 +79,7 @@ end
 HOMEBREW_LOGS = Pathname.new('~/Library/Logs/Homebrew/').expand_path
 
 RUBY_BIN = Pathname.new(RbConfig::CONFIG['bindir'])
-RUBY_PATH = RUBY_BIN + RbConfig::CONFIG['ruby_install_name'] + RbConfig::CONFIG['EXEEXT']
+RUBY_PATH = RUBY_BIN + (RbConfig::CONFIG['ruby_install_name'] + RbConfig::CONFIG['EXEEXT'])
 
 HOMEBREW_GITHUB_API_TOKEN = ENV["HOMEBREW_GITHUB_API_TOKEN"]
 HOMEBREW_USER_AGENT = "Homebrew #{HOMEBREW_VERSION} (Ruby #{RUBY_VERSION}-#{RUBY_PATCHLEVEL}; #{OS_VERSION})"
