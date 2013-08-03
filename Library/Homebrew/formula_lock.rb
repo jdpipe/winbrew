@@ -36,7 +36,9 @@ class FormulaLock
   def get_or_create_lockfile
     if @lockfile.nil? || @lockfile.closed?
       @lockfile = @path.open(File::RDWR | File::CREAT)
-      @lockfile.fcntl(Fcntl::F_SETFD, Fcntl::FD_CLOEXEC)
+      if MACOS
+        @lockfile.fcntl(Fcntl::F_SETFD, Fcntl::FD_CLOEXEC)
+      end
       @lockfile
     else
       @lockfile
