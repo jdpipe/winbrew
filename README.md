@@ -1,29 +1,45 @@
-Homebrew
-========
-Features, usage and installation instructions are [summarized on the homepage][home].
+Winbrew
+=======
+An experimental fork of Homebrew for Windows.
+
+Installation
+------------
+
+* Install MinGW, MSYS, with a C and C++ compiler: <http://mingw.org/download/installer>
+* Install msysgit: <http://msysgit.github.io/>
+* Install Ruby: <http://rubyinstaller.org/>
+* Make sure git and ruby are in your path
+* `git clone https://github.com/nddrylliog/winbrew.git /usr/local`
+* Add to your `.bashrc`:
+
+ ```sh
+ export PATH=/usr/local/bin:$PATH
+ export LD_LIBRARY_PATH=/usr/local/lib
+ ```
+
+* If necessary, add to your `.profile`:
+
+```sh
+#!/bin/sh.exe
+if [ -f ${HOME}/.bashrc ]
+then
+  . ${HOME}/.bashrc
+fi
+```
+
+* `brew install $WHATEVER_YOU_WANT`
 
 What Packages Are Available?
 ----------------------------
-1. You can [browse the Formula directory on GitHub][formula].
+1. You can [browse the Formula directory on GitHub](https://github.com/nddrylliog/winbrew/tree/master/Library/Formula).
 2. Or type `brew search` for a list.
 3. Or run `brew server` to browse packages off of a local web server.
-4. Or visit [braumeister.org][braumeister] to browse packages online.
+4. Or visit [braumeister](http://braumeister.org) to browse packages online.
+
+Requirement
+-----------
+* **Ruby** 1.8.6 or newer
 
 More Documentation
 ------------------
-`brew help` or `man brew` or check our [wiki][].
-
-Who Are You?
-------------
-I'm [Max Howell][mxcl] and I'm a splendid chap.
-
-License
--------
-Code is under the [BSD 2 Clause (NetBSD) license][license].
-
-[home]:http://brew.sh
-[wiki]:http://wiki.github.com/mxcl/homebrew
-[mxcl]:http://twitter.com/mxcl
-[formula]:http://github.com/mxcl/homebrew/tree/master/Library/Formula/
-[braumeister]:http://braumeister.org
-[license]:https://github.com/mxcl/homebrew/tree/master/Library/Homebrew/LICENSE
+`brew help` or `man brew` or check the Homebrew [wiki](https://github.com/mxcl/homebrew/wiki).
