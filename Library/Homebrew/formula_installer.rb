@@ -301,15 +301,6 @@ class FormulaInstaller
 
     @start_time = Time.now
 
-    # 1. formulae can modify ENV, so we must ensure that each
-    #    installation has a pristine ENV when it starts, forking now is
-    #    the easiest way to do this
-    # 2. formulae have access to __END__ the only way to allow this is
-    #    to make the formula script the executed script
-    read, write = IO.pipe
-    # I'm guessing this is not a good way to do this, but I'm no UNIX guru
-    ENV['HOMEBREW_ERROR_PIPE'] = write.to_i.to_s
-
     args = %W[
       nice #{RUBY_PATH}
       -W0
@@ -326,24 +317,17 @@ class FormulaInstaller
 
     begin
       puts "Spawning... #{args}"
-      Process.spawn *args,
-                    :in => read,
-                    :out => write
+      Process.spawn *args
     rescue Exception => e
       puts e
       write.close
       exit! 1
     end
 
-    ignore_interrupts(:quietly) do # the fork will receive the interrupt and marshall it back
-      write.close
-      Process.wait
-      data = read.read
-      raise Marshal.load(data) unless data.nil? or data.empty?
-      raise Interrupt if $?.exitstatus == 130
-      raise "Suspicious installation failure" unless $?.success?
-    end
-
+    Process.wait
+    raise Interrupt if $?.exitstatus == 130
+    raise "Suspicious installation failure" unless $?.success?
+  
     raise "Empty installation" if Dir["#{f.prefix}/*"].empty?
 
     Tab.create(f, build_argv).write # INSTALL_RECEIPT.json
