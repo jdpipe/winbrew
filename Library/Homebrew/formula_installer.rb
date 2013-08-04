@@ -316,7 +316,6 @@ class FormulaInstaller
     # args << { write => write } if RUBY_VERSION >= "2.0"
 
     begin
-      puts "Spawning... #{args}"
       Process.spawn *args
     rescue Exception => e
       puts e
