@@ -59,7 +59,7 @@ module FormulaCellarChecks
   def check_non_libraries
     return unless f.lib.directory?
 
-    valid_extensions = %w(.a .dylib .framework .jnilib .la .o .so
+    valid_extensions = %w(.a .dll .lib .jnilib .la .o .so
                           .jar .prl .pm .sh)
     non_libraries = f.lib.children.select do |g|
       next if g.directory?
@@ -79,7 +79,11 @@ module FormulaCellarChecks
   def check_non_executables bin
     return unless bin.directory?
 
-    non_exes = bin.children.select { |g| g.directory? or not g.executable? }
+    valid_extensions = %w(.exe)
+    non_exes = bin.children.select do |g|
+      next if g.directory?
+      not valid_extensions.include? g.extname
+    end
     return if non_exes.empty?
 
     ["Non-executables were installed to \"#{bin}\".",
