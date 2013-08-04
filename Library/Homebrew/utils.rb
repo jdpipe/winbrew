@@ -108,8 +108,6 @@ module Homebrew
       # But if you know how to write it better, let me know - A.
       msg = "#{e}"
       if msg.include? "Exec format error"
-        ohai "Got exec format error, running this instead:"
-        ohai ["sh", "-c", cmd + ' "$@"', "--", *args].join(' ')
         Process.spawn "sh", "-c", cmd + ' "$@"', "--", *args
       else
         raise e
