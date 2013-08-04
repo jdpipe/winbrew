@@ -181,7 +181,7 @@ class Keg < Pathname
     if from.symlink?
       from.delete
     elsif from.directory?
-      from.rmdir
+      from.rmtree
     elsif from.exist?
       from.delete
     end
