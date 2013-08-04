@@ -27,7 +27,21 @@ Installation
  fi
  ```
 
+* Close and re-open your shell, or just `source ~/.bashrc
 * `brew install $WHATEVER_YOU_WANT`
+
+Important notice
+----------------
+
+MSYS 1.0.18 has introduced a regression where some parallel builds will just hang.
+The workaround is to downgrade to 1.0.17 for the time being.
+
+* Exit all MSYS processes (close your MinGW shells, etc.)
+* Open cmd.exe (Windows standard shell)
+* Change directory to your MSYS prefix/bin directory
+* `mingw-get upgrade msys-core-bin=1.0.17-1`
+
+For more information, refer to the [bug report](http://sourceforge.net/p/mingw/bugs/1950/)
 
 What Packages Are Available?
 ----------------------------
@@ -38,7 +52,7 @@ What Packages Are Available?
 
 Requirement
 -----------
-* **Ruby** 1.8.6 or newer
+* **Ruby** 1.9.2 or newer
 
 More Documentation
 ------------------
