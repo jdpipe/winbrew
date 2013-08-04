@@ -6,6 +6,8 @@ class Openssl < Formula
   mirror 'http://mirrors.ibiblio.org/openssl/source/openssl-1.0.1e.tar.gz'
   sha256 'f74f15e8c8ff11aa3d5bb5f276d202ec18d7246e95f961db76054199c69c1ae3'
 
+  depends_on 'zlib'
+
   def install
     args = %W[./Configure
                --prefix=#{prefix}
