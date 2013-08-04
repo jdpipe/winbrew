@@ -2,7 +2,7 @@ module Homebrew extend self
   def log
     if ARGV.named.empty?
       cd HOMEBREW_REPOSITORY
-      exec "git", "log", *ARGV.options_only
+      exec "sh -c 'git log #{ARGV.options_only.join('')}'"
     else
       begin
         path = ARGV.formulae.first.path.realpath
@@ -11,7 +11,7 @@ module Homebrew extend self
         path = HOMEBREW_REPOSITORY/"Library/Formula/#{ARGV.named.first}.rb"
       end
       cd path.dirname # supports taps
-      exec "git", "log", *ARGV.options_only + ["--", path]
+      exec "sh -c 'git log #{ARGV.options_only.join('')} -- #{path}'"
     end
   end
 end
