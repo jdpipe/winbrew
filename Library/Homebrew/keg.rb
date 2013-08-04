@@ -33,6 +33,10 @@ class Keg < Pathname
   end
 
   def unlink
+    unless linked_keg_record.exist?
+      raise "Asked to unlink a non-linked keg"
+    end
+
     # these are used by the ObserverPathnameExtension to count the number
     # of files and directories linked
     $n=$d=0
@@ -45,7 +49,11 @@ class Keg < Pathname
         dst.extend ObserverPathnameExtension
 
         # check whether the file to be unlinked is from the current keg first
-        if !dst.symlink? || !dst.exist? || src != dst.resolved_path
+        # On Unixy platforms with symlinks, this is the original test:
+        #if !dst.symlink? || !dst.exist? || src != dst.resolved_path
+        # On MinGW/MSYS, symlinks are copies, so the resolved_path won't match,
+        # and 'symlink?' will be false - but let that not stop us.
+        if !dst.exist? || dst.directory?
           next
         end
 
@@ -55,7 +63,11 @@ class Keg < Pathname
         Find.prune if src.directory?
       end
     end
-    linked_keg_record.unlink if linked_keg_record.symlink?
+
+    # Same deal, the unixy version is here:
+    #linked_keg_record.unlink if linked_keg_record.symlink?
+    # But we just rmtree without pity:
+    linked_keg_record.rmtree
     $n+$d
   end
 
@@ -72,7 +84,10 @@ class Keg < Pathname
   end
 
   def linked?
-    linked_keg_record.directory? and self == linked_keg_record.realpath
+    # If we had symlinks, this would work...
+    #linked_keg_record.directory? and self == linked_keg_record.realpath
+    # But since we don't, we're just happy it's a directory
+    linked_keg_record.directory?
   end
 
   def completion_installed? shell
