@@ -49,14 +49,14 @@ module Homebrew extend self
 
   def head
     head = HOMEBREW_REPOSITORY.cd do
-      `git rev-parse --verify -q HEAD 2>/dev/null`.chomp
+      `sh -c 'git rev-parse --verify -q HEAD 2>/dev/null'`.chomp
     end
     if head.empty? then "(none)" else head end
   end
 
   def origin
     origin = HOMEBREW_REPOSITORY.cd do
-      `git config --get remote.origin.url`.chomp
+      `sh -c 'git config --get remote.origin.url'`.chomp
     end
     if origin.empty? then "(none)" else origin end
   end
@@ -89,7 +89,7 @@ module Homebrew extend self
   end
 
   def kernel
-    `uname -m`.chomp
+    `sh -c 'uname -m'`.chomp
   end
 
   def macports_or_fink
