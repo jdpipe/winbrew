@@ -86,8 +86,9 @@ class Requirement
     case o
     when Pathname
       self.class.env do
-        unless ENV["PATH"].split(":").include?(o.parent.to_s)
-          ENV.append("PATH", o.parent, ":")
+        # The path-separator is ';' on Windows
+        unless ENV["PATH"].split(";").include?(o.parent.to_s)
+          ENV.append("PATH", o.parent, ";")
         end
       end
     end

@@ -5,7 +5,6 @@ module Homebrew extend self
 
   # Create a formula from a tarball URL
   def create
-
     # Allow searching MacPorts or Fink.
     if ARGV.include? '--macports'
       exec_browser "http://www.macports.org/ports.php?by=name&substr=#{ARGV.next}"
