@@ -113,7 +113,8 @@ class CurlDownloadStrategy < AbstractDownloadStrategy
     when :gzip, :bzip2, :compress, :tar
       # Assume these are also tarred
       # TODO check if it's really a tar archive
-      safe_system 'tar', 'xf', @tarball_path
+      # --force-local is needed for window paths with a ':' in them
+      safe_system 'tar', '--force-local', 'xf', @tarball_path
       chdir
     when :xz
       raise "You must install XZutils: brew install xz" unless File.executable? xzpath
