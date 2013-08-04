@@ -129,13 +129,8 @@ class << ENV
 
   def determine_path
     paths = [superbin]
-    if MacSystem.xcode43_without_clt?
-      paths << "#{MacOS::Xcode.prefix}/usr/bin"
-      paths << "#{MacOS::Xcode.prefix}/Toolchains/XcodeDefault.xctoolchain/usr/bin"
-    end
     paths += deps.map{|dep| "#{HOMEBREW_PREFIX}/opt/#{dep}/bin" }
-    paths << "#{MacSystem.x11_prefix}/bin" if x11?
-    paths += %w{/usr/bin /bin /usr/sbin /sbin}
+    paths += %w{/usr/bin /mingw/bin}
     paths.to_path_s
   end
 
