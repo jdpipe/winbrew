@@ -121,8 +121,7 @@ class CurlDownloadStrategy < AbstractDownloadStrategy
       safe_system "#{xzpath} -dc \"#{@tarball_path}\" | tar xf -"
       chdir
     when :pkg
-      safe_system '/usr/sbin/pkgutil', '--expand', @tarball_path, basename_without_params
-      chdir
+      raise ".pkg files are only supported on OSX"
     when :rar
       raise "You must install unrar: brew install unrar" unless which "unrar"
       quiet_safe_system 'unrar', 'x', {:quiet_flag => '-inul'}, @tarball_path
