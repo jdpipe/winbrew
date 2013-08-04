@@ -22,7 +22,7 @@ module MacOS extend self
         ['', '.exe'].each do |postfix|
           path = (Pathname.new(prefix) + (tool.to_s + postfix))
           if path.exist? and path.executable?
-            return @locate[tool.to_s] = path
+            return @locate[tool.to_s] = path.to_s.gsub('\\', '/')
           end
         end
       end
