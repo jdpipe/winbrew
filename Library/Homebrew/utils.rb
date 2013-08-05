@@ -108,6 +108,10 @@ module Homebrew
       # But if you know how to write it better, let me know - A.
       msg = "#{e}"
       if msg.include? "Exec format error"
+        # Shell file, needs sh, can't be spawned with Win32 APIs
+        Process.spawn "sh", "-c", cmd + ' "$@"', "--", *args
+      elsif msg.include? "No such file"
+        # Might be executable without the'.exe' extension, shell will find it
         Process.spawn "sh", "-c", cmd + ' "$@"', "--", *args
       else
         raise e
