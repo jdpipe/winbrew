@@ -7,7 +7,6 @@ class Zlib < Formula
 
   def install
     ENV['PREFIX'] = prefix
-    ENV['SHARED_MODE'] = '1'
     ENV['INCLUDE_PATH'] = "#{prefix}/include"
     ENV['LIBRARY_PATH'] = "#{prefix}/lib"
     ENV['BINARY_PATH'] = "#{prefix}/bin"
