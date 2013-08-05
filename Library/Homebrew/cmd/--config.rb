@@ -1,4 +1,5 @@
 require 'hardware'
+require 'windows'
 
 module Homebrew extend self
   def __config
@@ -97,6 +98,14 @@ module Homebrew extend self
     @ponk.join(", ") unless @ponk.empty?
   end
 
+  def msys_version
+    `uname -r`
+  end
+
+  def msys_prefix
+    Windows.canonicalize('/')
+  end
+
   # we try to keep output minimal
   def dump_build_config
     puts "HOMEBREW_VERSION: #{HOMEBREW_VERSION}"
@@ -136,15 +145,22 @@ module Homebrew extend self
     puts "HOMEBREW_PREFIX: #{HOMEBREW_PREFIX}"
     puts "HOMEBREW_CELLAR: #{HOMEBREW_CELLAR}"
     puts hardware
-    puts "OS X: #{MACOS_FULL_VERSION}-#{kernel}"
-    puts "Xcode: #{xcode}" if xcode
-    puts "CLT: #{clt}" if clt
-    puts "GCC-4.0: build #{gcc_40}" if gcc_40
-    puts "GCC-4.2: build #{gcc_42}" if gcc_42
-    puts "LLVM-GCC: #{llvm ? "build #{llvm}" : "N/A"}"
-    puts "Clang: #{clang ? "#{clang} build #{clang_build}" : "N/A"}"
-    puts "MacPorts/Fink: #{macports_or_fink}" if macports_or_fink
-    puts "X11: #{describe_x11}"
+    puts "OS: #{MACOS_FULL_VERSION}-#{kernel}"
+
+    if MACOS
+      puts "Xcode: #{xcode}" if xcode
+      puts "CLT: #{clt}" if clt
+      puts "GCC-4.0: build #{gcc_40}" if gcc_40
+      puts "GCC-4.2: build #{gcc_42}" if gcc_42
+      puts "LLVM-GCC: #{llvm ? "build #{llvm}" : "N/A"}"
+      puts "Clang: #{clang ? "#{clang} build #{clang_build}" : "N/A"}"
+      puts "MacPorts/Fink: #{macports_or_fink}" if macports_or_fink
+      puts "X11: #{describe_x11}"
+    elsif WIN32
+      puts "MSYS version: #{msys_version}"
+      puts "MSYS prefix: #{msys_prefix}"
+    end
+
     puts "System Ruby: #{RUBY_VERSION}-#{RUBY_PATCHLEVEL}"
     puts "Perl: #{describe_perl}"
     puts "Python: #{describe_python}"

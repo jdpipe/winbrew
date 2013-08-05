@@ -19,10 +19,20 @@ if RUBY_PLATFORM =~ /darwin/
   MACOS_FULL_VERSION = `/usr/bin/sw_vers -productVersion`.chomp
   MACOS_VERSION = MACOS_FULL_VERSION[/10\.\d+/].to_f
   OS_VERSION = "Mac OS X #{MACOS_FULL_VERSION}"
+  WIN32 = false
   MACOS = true
+elsif RUBY_PLATFORM =~ /mingw/
+  MINGW_VERSION = `uname -s`.chomp
+  WINDOWS_VERSION = `wmic os get Caption`.split("\n")[2].strip
+  MACOS_FULL_VERSION = "#{WINDOWS_VERSION} #{MINGW_VERSION}"
+
+  OS_VERSION = "Windows #{MACOS_FULL_VERSION}"
+  WIN32 = true
+  MACOS = false
 else
   MACOS_FULL_VERSION = MACOS_VERSION = 0
   OS_VERSION = RUBY_PLATFORM
+  WIN32 = false
   MACOS = false
 end
 
