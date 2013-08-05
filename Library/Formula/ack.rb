@@ -12,6 +12,6 @@ class Ack < Formula
   end
 
   test do
-    system "#{bin}/ack", 'brew', '/usr/share/dict/words'
+    system "#{bin}/ack", 'autoconf', '/mingw/share/doc/MinGW/autoconf.README.txt'
   end
 end
