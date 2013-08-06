@@ -18,6 +18,9 @@ class Libogg < Formula
   def install
     ENV.universal_binary if build.universal?
 
+    # optimizations make GCC 4.7.2 fail configure tests
+    ENV.O1
+
     system "./autogen.sh" if build.head?
     system "./configure", "--disable-dependency-tracking",
                           "--prefix=#{prefix}"
