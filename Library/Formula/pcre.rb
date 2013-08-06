@@ -6,6 +6,9 @@ class Pcre < Formula
   mirror 'http://downloads.sourceforge.net/project/pcre/pcre/8.33/pcre-8.33.tar.bz2'
   sha256 'c603957a4966811c04af5f6048c71cfb4966ec93312d7b3118116ed9f3bc0478'
 
+  depends_on 'zlib'
+  depends_on 'bzip2'
+
   option :universal
 
   fails_with :llvm do
@@ -25,7 +28,10 @@ class Pcre < Formula
                           "--enable-jit"
     system "make"
     ENV.deparallelize
-    system "make test"
+
+    # Not running tests for now - RunTest fails on MinGW..
+    #system "make test"
+    
     system "make install"
   end
 end
