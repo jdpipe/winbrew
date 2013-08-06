@@ -117,7 +117,9 @@ class CurlDownloadStrategy < AbstractDownloadStrategy
       safe_system 'tar', '--force-local', '-xf', @tarball_path
       chdir
     when :xz
-      raise "You must install XZutils: brew install xz" unless File.executable? xzpath
+      if MACOS
+        raise "You must install XZutils: brew install xz" unless File.executable? xzpath
+      end
       safe_system "#{xzpath} -dc \"#{@tarball_path}\" | tar xf -"
       chdir
     when :pkg
@@ -143,7 +145,11 @@ class CurlDownloadStrategy < AbstractDownloadStrategy
   private
 
   def xzpath
-    "#{HOMEBREW_PREFIX}/opt/xz/bin/xz"
+    path = "#{HOMEBREW_PREFIX}/opt/xz/bin/xz"
+    if WIN32
+      path = "xz"
+    end
+    path
   end
 
   def chdir
