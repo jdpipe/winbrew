@@ -22,6 +22,8 @@ class Libvorbis < Formula
   def install
     ENV.universal_binary if build.universal?
 
+    # otherwise configure tests fail
+    ENV.O1
     system "./autogen.sh" if build.head?
     system "./configure", "--disable-dependency-tracking",
                           "--prefix=#{prefix}"
