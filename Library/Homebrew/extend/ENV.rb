@@ -248,6 +248,7 @@ module HomebrewEnvExtension
     # Clear all lib and include dirs from CFLAGS, CPPFLAGS, LDFLAGS that were
     # previously added by win32sdk
     delete('CPATH')
+    remove 'CPPFLAGS',  "-I#{HOMEBREW_PREFIX}/include"
     remove 'LDFLAGS', "-L#{HOMEBREW_PREFIX}/lib"
   end
 
@@ -255,6 +256,7 @@ module HomebrewEnvExtension
     # Sets all needed lib and include dirs to CFLAGS, CPPFLAGS, LDFLAGS.
     remove_win32sdk
     self['CPATH'] = "#{HOMEBREW_PREFIX}/include"
+    prepend 'CPPFLAGS',  "-I#{HOMEBREW_PREFIX}/include"
     prepend 'LDFLAGS', "-L#{HOMEBREW_PREFIX}/lib"
   end
 
