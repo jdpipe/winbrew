@@ -208,7 +208,12 @@ def exec_editor *args
 end
 
 def exec_browser *args
-  browser = ENV['HOMEBREW_BROWSER'] || ENV['BROWSER'] || "open"
+  browser = ENV['HOMEBREW_BROWSER'] || ENV['BROWSER']
+  if MACOS
+    browser ||= "open"
+  elsif WIN32
+    browser ||= "start"
+  end
   safe_exec(browser, *args)
 end
 
