@@ -7,6 +7,14 @@ module HomebrewEnvExtension
   FC_FLAG_VARS = %w{FCFLAGS FFLAGS}
   DEFAULT_FLAGS = '-march=core2 -msse4'
 
+  def local_dir
+    dir = '/usr/local'
+    if WIN32
+      dir = Windows.canonicalize dir
+    end
+    dir
+  end
+
   def setup_build_environment
     # Clear CDPATH to avoid make issues that depend on changing directories
     delete('CDPATH')
@@ -30,11 +38,6 @@ module HomebrewEnvExtension
     self['ACLOCAL_PATH'] = "#{HOMEBREW_PREFIX}/share/aclocal" if MacOS::Xcode.provides_autotools?
 
     self['MAKEFLAGS'] = "-j#{self.make_jobs}"
-
-    local_dir = '/usr/local'
-    if WIN32
-      local_dir = Windows.canonicalize local_dir
-    end
 
     unless HOMEBREW_PREFIX.to_s == local_dir
       # /usr/local is already an -isystem and -L directory so we skip it
@@ -65,8 +68,11 @@ module HomebrewEnvExtension
     end
 
     # Add lib and include etc. from the current macosxsdk to compiler flags:
-    macosxsdk MacOS.version
+    macosxsdk MacOS.version if MACOS
 
+    # Add lib and include etc. for Win32 too
+    win32sdk if WIN32
+      
     # For Xcode 4.3 (*without* the "Command Line Tools for Xcode") compiler and tools inside of Xcode:
     if not MacOS::CLT.installed? and MacOS::Xcode.installed? and MacOS::Xcode.version >= "4.3"
       # Some tools (clang, etc.) are in the xctoolchain dir of Xcode
@@ -202,7 +208,7 @@ module HomebrewEnvExtension
       remove_from_cflags "-isysroot #{sdk}"
       remove 'CPPFLAGS', "-isysroot #{sdk}"
       remove 'LDFLAGS', "-isysroot #{sdk}"
-      if HOMEBREW_PREFIX.to_s == '/usr/local'
+      if HOMEBREW_PREFIX.to_s == local_dir
         delete('CMAKE_PREFIX_PATH')
       else
         # It was set in setup_build_environment, so we have to restore it here.
@@ -238,10 +244,25 @@ module HomebrewEnvExtension
     end
   end
 
+  def remove_win32sdk
+    # Clear all lib and include dirs from CFLAGS, CPPFLAGS, LDFLAGS that were
+    # previously added by win32sdk
+    delete('CPATH')
+    remove 'LDFLAGS', "-L#{HOMEBREW_PREFIX}/lib"
+  end
+
+  def win32sdk
+    # Sets all needed lib and include dirs to CFLAGS, CPPFLAGS, LDFLAGS.
+    remove_win32sdk
+    self['CPATH'] = "#{HOMEBREW_PREFIX}/include"
+    prepend 'LDFLAGS', "-L#{HOMEBREW_PREFIX}/lib"
+  end
+
   def minimal_optimization
     self['CFLAGS'] = self['CXXFLAGS'] = "-Os #{SAFE_CFLAGS_FLAGS}"
     macosxsdk unless MacOS::CLT.installed?
   end
+
   def no_optimization
     self['CFLAGS'] = self['CXXFLAGS'] = SAFE_CFLAGS_FLAGS
     macosxsdk unless MacOS::CLT.installed?
