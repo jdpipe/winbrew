@@ -22,6 +22,7 @@ if RUBY_PLATFORM =~ /darwin/
   WIN32 = false
   MACOS = true
 elsif RUBY_PLATFORM =~ /mingw/
+  MACOS_VERSION = 0
   MINGW_VERSION = `uname -s`.chomp
   WINDOWS_VERSION = `wmic os get Caption`.split("\n")[2].strip
   MACOS_FULL_VERSION = "#{WINDOWS_VERSION} #{MINGW_VERSION}"
