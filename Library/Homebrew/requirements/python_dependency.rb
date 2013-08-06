@@ -125,7 +125,8 @@ class PythonInstalled < Requirement
           # Using the ORIGINAL_PATHS here because in superenv, the user
           # installed external Python is not visible otherwise.
           tmp_PATH = ENV['PATH']
-          ENV['PATH'] = ORIGINAL_PATHS.join(':')
+          # Path separator is ';' on Windows
+          ENV['PATH'] = ORIGINAL_PATHS.join(';')
           which(@name)
         ensure
           ENV['PATH'] = tmp_PATH
@@ -150,7 +151,7 @@ class PythonInstalled < Requirement
 
   # Get the actual x.y.z version by asking python (or python3 if @min_version>=3)
   def version
-    @version ||= PythonVersion.new(`#{binary} -c 'import sys;print(sys.version[:5])'`.strip)
+    @version ||= PythonVersion.new(`#{binary} --version 2>&1`.strip.split(' ')[1])
   end
 
   # python.xy => "python2.7" is often used (and many formulae had this as `which_python`).
@@ -248,12 +249,14 @@ class PythonInstalled < Requirement
     return false if binary.nil?
 
     # Write our sitecustomize.py
-    file = global_site_packages/"sitecustomize.py"
-    ohai "Writing #{file}" if ARGV.verbose? && ARGV.debug?
-    [".pyc", ".pyo", ".py"].map{ |f|
-      global_site_packages/"sitecustomize#{f}"
-    }.each{ |f| f.delete if f.exist? }
-    file.write(sitecustomize)
+    if MACOS
+      file = global_site_packages/"sitecustomize.py"
+      ohai "Writing #{file}" if ARGV.verbose? && ARGV.debug?
+      [".pyc", ".pyo", ".py"].map{ |f|
+        global_site_packages/"sitecustomize#{f}"
+      }.each{ |f| f.delete if f.exist? }
+      file.write(sitecustomize)
+    end
 
     # For non-system python's we add the opt_prefix/bin of python to the path.
     ENV.prepend 'PATH', binary.dirname, ':' unless from_osx?
