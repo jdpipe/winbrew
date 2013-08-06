@@ -1,4 +1,5 @@
 require 'hardware'
+require 'windows'
 
 module HomebrewEnvExtension
   SAFE_CFLAGS_FLAGS = "-w -pipe"
@@ -30,7 +31,12 @@ module HomebrewEnvExtension
 
     self['MAKEFLAGS'] = "-j#{self.make_jobs}"
 
-    unless HOMEBREW_PREFIX.to_s == '/usr/local'
+    local_dir = '/usr/local'
+    if WIN32
+      local_dir = Windows.canonicalize local_dir
+    end
+
+    unless HOMEBREW_PREFIX.to_s == local_dir
       # /usr/local is already an -isystem and -L directory so we skip it
       self['CPPFLAGS'] = "-isystem #{HOMEBREW_PREFIX}/include"
       self['LDFLAGS'] = "-L#{HOMEBREW_PREFIX}/lib"
