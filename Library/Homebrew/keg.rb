@@ -34,7 +34,8 @@ class Keg < Pathname
 
   def unlink
     unless linked_keg_record.exist?
-      raise "Asked to unlink a non-linked keg"
+      # Not linked anyway
+      return
     end
 
     # these are used by the ObserverPathnameExtension to count the number
