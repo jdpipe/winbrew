@@ -18,12 +18,12 @@ class Zsh < Formula
       --enable-scriptdir=#{share}/zsh/scripts
       --enable-site-fndir=#{HOMEBREW_PREFIX}/share/zsh/site-functions
       --enable-site-scriptdir=#{HOMEBREW_PREFIX}/share/zsh/site-scripts
-      --enable-cap
       --enable-maildir-support
       --enable-multibyte
       --enable-pcre
       --enable-zsh-secure-free
       --with-tcsetpgrp
+      --with-term-lib=ncurses
     ]
 
     args << '--disable-etcdir' if build.include? 'disable-etcdir'
