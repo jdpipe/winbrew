@@ -24,7 +24,7 @@ class X264 < Formula
 
     system "./configure", *args
 
-    if MacOS.prefer_64_bit?
+    if MACOS && MacOS.prefer_64_bit?
       inreplace 'config.mak' do |s|
         soflags = s.get_make_var 'SOFLAGS'
         s.change_make_var! 'SOFLAGS', soflags.gsub(' -Wl,-read_only_relocs,suppress', '')
