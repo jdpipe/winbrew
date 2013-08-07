@@ -27,11 +27,13 @@ class Flac < Formula
                           "--enable-static",
                           "--prefix=#{prefix}",
                           "--mandir=#{man}"
-    ENV['OBJ_FORMAT']='macho'
+    ENV['OBJ_FORMAT']='macho' if MACOS
 
     # adds universal flags to the generated libtool script
-    inreplace "libtool" do |s|
-      s.gsub! ":$verstring\"", ":$verstring -arch i386 -arch x86_64\""
+    if MACOS
+      inreplace "libtool" do |s|
+        s.gsub! ":$verstring\"", ":$verstring -arch i386 -arch x86_64\""
+      end
     end
 
     system "make install"
