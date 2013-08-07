@@ -10,6 +10,6 @@ class Nasm < Formula
   def install
     ENV.universal_binary if build.universal?
     system "./configure", "--prefix=#{prefix}"
-    system "make install install_rdf"
+    system "make install"
   end
 end
