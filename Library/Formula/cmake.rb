@@ -36,8 +36,6 @@ class Cmake < Formula
   def install
     args = %W[
       --prefix=#{prefix}
-      --system-libs
-      --no-system-libarchive
       --datadir=/share/cmake
       --docdir=/share/doc/cmake
       --mandir=/share/man
