@@ -10,7 +10,11 @@ class Chipmunk < Formula
   depends_on 'cmake' => :build
 
   def install
-    system "cmake", "-DCMAKE_INSTALL_PREFIX=#{prefix}",
+    # Have to specify -G by hand otherwise it tries
+    # to build for MSVC.
+    system "cmake", "-G", "Unix Makefiles",
+                    "-DBUILD_DEMOS=OFF",
+                    "-DCMAKE_INSTALL_PREFIX=#{prefix}",
                     "-DCMAKE_PREFIX_PATH=#{prefix}",
                     "-DPREFIX=#{prefix}",
                     "."
