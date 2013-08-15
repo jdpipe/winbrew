@@ -252,7 +252,7 @@ module HomebrewEnvExtension
 
   def x11
     # There are some config scripts here that should go in the PATH
-    append 'PATH', MacOS::X11.bin, ':'
+    append 'PATH', MacOS::X11.bin, File::PATH_SEPARATOR
 
     # Append these to PKG_CONFIG_LIBDIR so they are searched
     # *after* our own pkgconfig directories, as we dupe some of the
@@ -266,7 +266,7 @@ module HomebrewEnvExtension
 
     append 'CPPFLAGS', "-I#{MacOS::X11.include}"
 
-    append 'ACLOCAL_PATH', MacOS::X11.share/'aclocal', ':'
+    append 'ACLOCAL_PATH', MacOS::X11.share/'aclocal', File::PATH_SEPARATOR
 
     unless MacOS::CLT.installed?
       append 'CMAKE_PREFIX_PATH', MacOS.sdk_path/'usr/X11', File::PATH_SEPARATOR
@@ -414,7 +414,7 @@ class << ENV
     end
   end
   def prepend_path key, path
-    prepend key, path, ':' if File.directory? path
+    prepend key, path, File::PATH_SEPARATOR if File.directory? path
   end
   def remove keys, value
     Array(keys).each do |key|
@@ -445,7 +445,7 @@ class << ENV
     paths = ORIGINAL_PATHS.map { |p| p.realpath.to_s rescue nil } - %w{/usr/X11/bin /opt/X11/bin}
     self['PATH'] = paths.unshift(*self['PATH'].split(":")).uniq.join(":")
     # XXX hot fix to prefer brewed stuff (e.g. python) over /usr/bin.
-    prepend 'PATH', HOMEBREW_PREFIX/'bin', ':'
+    prepend 'PATH', HOMEBREW_PREFIX/'bin', File::PATH_SEPARATOR
   end
 
   def with_build_environment
