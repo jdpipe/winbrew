@@ -257,8 +257,8 @@ module HomebrewEnvExtension
     # Append these to PKG_CONFIG_LIBDIR so they are searched
     # *after* our own pkgconfig directories, as we dupe some of the
     # libs in XQuartz.
-    append 'PKG_CONFIG_LIBDIR', MacOS::X11.lib/'pkgconfig', ':'
-    append 'PKG_CONFIG_LIBDIR', MacOS::X11.share/'pkgconfig', ':'
+    append 'PKG_CONFIG_LIBDIR', MacOS::X11.lib/'pkgconfig', File::PATH_SEPARATOR
+    append 'PKG_CONFIG_LIBDIR', MacOS::X11.share/'pkgconfig', File::PATH_SEPARATOR
 
     append 'LDFLAGS', "-L#{MacOS::X11.lib}"
     append 'CMAKE_PREFIX_PATH', MacOS::X11.prefix, File::PATH_SEPARATOR
