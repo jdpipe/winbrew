@@ -226,8 +226,8 @@ module HomebrewEnvExtension
       # And the linker needs to find sdk/usr/lib
       append 'LDFLAGS', "-isysroot #{sdk}"
       # Needed to build cmake itself and perhaps some cmake projects:
-      append 'CMAKE_PREFIX_PATH', "#{sdk}/usr", ':'
-      append 'CMAKE_FRAMEWORK_PATH', "#{sdk}/System/Library/Frameworks", ':'
+      append 'CMAKE_PREFIX_PATH', "#{sdk}/usr", File::PATH_SEPARATOR
+      append 'CMAKE_FRAMEWORK_PATH', "#{sdk}/System/Library/Frameworks", File::PATH_SEPARATOR
     end
   end
 
@@ -261,15 +261,15 @@ module HomebrewEnvExtension
     append 'PKG_CONFIG_LIBDIR', MacOS::X11.share/'pkgconfig', ':'
 
     append 'LDFLAGS', "-L#{MacOS::X11.lib}"
-    append 'CMAKE_PREFIX_PATH', MacOS::X11.prefix, ':'
-    append 'CMAKE_INCLUDE_PATH', MacOS::X11.include, ':'
+    append 'CMAKE_PREFIX_PATH', MacOS::X11.prefix, File::PATH_SEPARATOR
+    append 'CMAKE_INCLUDE_PATH', MacOS::X11.include, File::PATH_SEPARATOR
 
     append 'CPPFLAGS', "-I#{MacOS::X11.include}"
 
     append 'ACLOCAL_PATH', MacOS::X11.share/'aclocal', ':'
 
     unless MacOS::CLT.installed?
-      append 'CMAKE_PREFIX_PATH', MacOS.sdk_path/'usr/X11', ':'
+      append 'CMAKE_PREFIX_PATH', MacOS.sdk_path/'usr/X11', File::PATH_SEPARATOR
       append 'CPPFLAGS', "-I#{MacOS::X11.include}/freetype2"
       append 'CFLAGS', "-I#{MacOS::X11.include}"
     end
