@@ -76,7 +76,7 @@ module HomebrewEnvExtension
     paths << HOMEBREW_PREFIX/'share/pkgconfig'
     paths << HOMEBREW_REPOSITORY/"Library/ENV/pkgconfig/#{MacOS.version}"
     paths << '/usr/lib/pkgconfig'
-    paths.select { |d| File.directory? d }.join(':')
+    paths.select { |d| File.directory? d }.join(File::PATH_SEPARATOR)
   end
 
   def deparallelize
