@@ -38,16 +38,18 @@ class Keg < Pathname
       return
     end
 
-    # these are used by the ObserverPathnameExtension to count the number
-    # of files and directories linked
-    $n=$d=0
+    ObserverPathnameExtension.reset_counts!
+
+    dirs = []
 
     TOP_LEVEL_DIRECTORIES.map{ |d| self/d }.each do |dir|
       next unless dir.exist?
       dir.find do |src|
         next if src == self
-        dst=HOMEBREW_PREFIX+src.relative_path_from(self)
-        dst.extend ObserverPathnameExtension
+        dst = HOMEBREW_PREFIX + src.relative_path_from(self)
+        dst.extend(ObserverPathnameExtension)
+
+        dirs << dst if dst.directory? && !dst.symlink?
 
         # check whether the file to be unlinked is from the current keg first
         # On Unixy platforms with symlinks, this is the original test:
@@ -60,7 +62,6 @@ class Keg < Pathname
 
         dst.uninstall_info if dst.to_s =~ INFOFILE_RX and ENV['HOMEBREW_KEEP_INFO']
         dst.unlink
-        dst.parent.rmdir_if_possible
         Find.prune if src.directory?
       end
     end
@@ -69,7 +70,10 @@ class Keg < Pathname
     #linked_keg_record.unlink if linked_keg_record.symlink?
     # But we just rmtree without pity:
     linked_keg_record.rmtree
-    $n+$d
+
+    dirs.reverse_each(&:rmdir_if_possible)
+
+    ObserverPathnameExtension.total
   end
 
   def fname
@@ -118,8 +122,7 @@ class Keg < Pathname
   def link mode=OpenStruct.new
     raise "Cannot link #{fname}\nAnother version is already linked: #{linked_keg_record.realpath}" if linked_keg_record.directory?
 
-    $n=0
-    $d=0
+    ObserverPathnameExtension.reset_counts!
 
     share_mkpaths = %w[aclocal doc info locale man]
     share_mkpaths.concat((1..8).map { |i| "man/man#{i}" })
@@ -185,7 +188,7 @@ class Keg < Pathname
       optlink
     end
 
-    return $n + $d
+    ObserverPathnameExtension.total
   rescue Exception
     opoo "Could not link #{fname}. Unlinking..."
     unlink
@@ -275,6 +278,15 @@ class Keg < Pathname
           make_relative_symlink dst, src, mode
         end
       elsif src.directory?
+        # If the `src` in the Cellar is a symlink itself, link it directly.
+        # For example Qt has `Frameworks/QtGui.framework -> lib/QtGui.framework`
+        # Not making a link here, would result in an empty dir because the
+        # `src` is not followed by `find`.
+        if src.symlink? && !dst.exist?
+          make_relative_symlink dst, src, mode
+          Find.prune
+        end
+
         # if the dst dir already exists, then great! walk the rest of the tree tho
         next if dst.directory? and not dst.symlink?
         # no need to put .app bundles in the path, the user can just use

@@ -183,9 +183,9 @@ def puts_columns items, star_items=[]
   end
 end
 
-def which cmd
+def which cmd, path=ENV['PATH']
   # Path separator is ';' on Windows, executable end with '.exe'
-  dir = ENV['PATH'].split(';').find {|p| File.exist? File.join(p, "#{cmd}.exe")} if dir.nil?
+  dir = path.split(';').find {|p| File.exist? File.join(p, "#{cmd}.exe")} if dir.nil?
   Pathname.new(File.join(dir, "#{cmd}.exe")) unless dir.nil?
 end
 

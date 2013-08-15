@@ -2,9 +2,8 @@ require 'formula'
 
 class Sdl2 < Formula
   homepage 'http://www.libsdl.org/'
-  url 'http://www.libsdl.org/tmp/SDL-2.0.0-7541.zip'
-  version '2.0.0-7541'
-  sha1 '24352036ed2d9d72506a514dd59cc6218b63b211'
+  url 'http://www.libsdl.org/release/SDL2-2.0.0.tar.gz'
+  sha1 'a907eb5203abad6649c1eae0120d96c0a1931350'
 
   head 'http://hg.libsdl.org/SDL', :using => :hg
 
@@ -31,9 +30,6 @@ class Sdl2 < Formula
 
     system './configure', *args
     system "make install"
-
-    # Copy source files needed for Ojective-C support.
-    #libexec.install Dir["src/main/macosx/*"] unless build.head?
   end
 
   def test
