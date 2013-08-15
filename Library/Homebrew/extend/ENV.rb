@@ -64,9 +64,9 @@ module HomebrewEnvExtension
     # For Xcode 4.3 (*without* the "Command Line Tools for Xcode") compiler and tools inside of Xcode:
     if not MacOS::CLT.installed? and MacOS::Xcode.installed? and MacOS::Xcode.version >= "4.3"
       # Some tools (clang, etc.) are in the xctoolchain dir of Xcode
-      append 'PATH', "#{MacOS.xctoolchain_path}/usr/bin", ":" if MacOS.xctoolchain_path
+      append 'PATH', "#{MacOS.xctoolchain_path}/usr/bin", File::PATH_SEPARATOR if MacOS.xctoolchain_path
       # Others are now at /Applications/Xcode.app/Contents/Developer/usr/bin
-      append 'PATH', "#{MacOS.dev_tools_path}", ":"
+      append 'PATH', "#{MacOS.dev_tools_path}", File::PATH_SEPARATOR
     end
   end
 
@@ -219,7 +219,7 @@ module HomebrewEnvExtension
       # Extra setup to support Xcode 4.3+ without CLT.
       self['SDKROOT'] = sdk
       # Tell clang/gcc where system include's are:
-      append 'CPATH', "#{sdk}/usr/include", ":"
+      append 'CPATH', "#{sdk}/usr/include", File::PATH_SEPARATOR
       # The -isysroot is needed, too, because of the Frameworks
       append_to_cflags "-isysroot #{sdk}"
       append 'CPPFLAGS', "-isysroot #{sdk}"
@@ -443,7 +443,7 @@ class << ENV
 
   def userpaths!
     paths = ORIGINAL_PATHS.map { |p| p.realpath.to_s rescue nil } - %w{/usr/X11/bin /opt/X11/bin}
-    self['PATH'] = paths.unshift(*self['PATH'].split(":")).uniq.join(":")
+    self['PATH'] = paths.unshift(*self['PATH'].split(File::PATH_SEPARATOR)).uniq.join(File::PATH_SEPARATOR)
     # XXX hot fix to prefer brewed stuff (e.g. python) over /usr/bin.
     prepend 'PATH', HOMEBREW_PREFIX/'bin', File::PATH_SEPARATOR
   end
