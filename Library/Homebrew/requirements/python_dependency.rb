@@ -125,7 +125,7 @@ class PythonInstalled < Requirement
           # Using the ORIGINAL_PATHS here because in superenv, the user
           # installed external Python is not visible otherwise.
           tmp_PATH = ENV['PATH']
-          ENV['PATH'] = ORIGINAL_PATHS.join(':')
+          ENV['PATH'] = ORIGINAL_PATHS.join(File::PATH_SEPARATOR)
           which(@name)
         ensure
           ENV['PATH'] = tmp_PATH
@@ -256,12 +256,12 @@ class PythonInstalled < Requirement
     file.write(sitecustomize)
 
     # For non-system python's we add the opt_prefix/bin of python to the path.
-    ENV.prepend 'PATH', binary.dirname, ':' unless from_osx?
+    ENV.prepend 'PATH', binary.dirname, File::PATH_SEPARATOR unless from_osx?
 
     ENV['PYTHONHOME'] = nil  # to avoid fuck-ups.
     ENV['PYTHONPATH'] = global_site_packages.to_s unless brewed?
-    ENV.append 'CMAKE_INCLUDE_PATH', incdir, ':'
-    ENV.append 'PKG_CONFIG_PATH', pkg_config_path, ':' if pkg_config_path
+    ENV.append 'CMAKE_INCLUDE_PATH', incdir, File::PATH_SEPARATOR
+    ENV.append 'PKG_CONFIG_PATH', pkg_config_path, File::PATH_SEPARATOR if pkg_config_path
     # We don't set the -F#{framework} here, because if Python 2.x and 3.x are
     # used, `Python.framework` is ambiguous. However, in the `python do` block
     # we can set LDFLAGS+="-F#{framework}" because only one is temporarily set.
