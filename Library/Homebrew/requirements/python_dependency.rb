@@ -242,26 +242,17 @@ class PythonInstalled < Requirement
     return if binary.nil?
 
     # Write our sitecustomize.py
-<<<<<<< HEAD
     if MACOS
       file = global_site_packages/"sitecustomize.py"
       ohai "Writing #{file}" if ARGV.verbose? && ARGV.debug?
-      [".pyc", ".pyo", ".py"].map{ |f|
-        global_site_packages/"sitecustomize#{f}"
-      }.each{ |f| f.delete if f.exist? }
+
+      %w{.pyc .pyo .py}.each do |ext|
+        f = global_site_packages/"sitecustomize#{ext}"
+        f.unlink if f.exist?
+      end
+
       file.write(sitecustomize)
     end
-=======
-    file = global_site_packages/"sitecustomize.py"
-    ohai "Writing #{file}" if ARGV.verbose? && ARGV.debug?
-
-    %w{.pyc .pyo .py}.each do |ext|
-      f = global_site_packages/"sitecustomize#{ext}"
-      f.unlink if f.exist?
-    end
-
-    file.write(sitecustomize)
->>>>>>> 4685616111248dfa5769be7234c892688bf9fd64
 
     # For non-system python's we add the opt_prefix/bin of python to the path.
     ENV.prepend 'PATH', binary.dirname, ':' unless from_osx?
